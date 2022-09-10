@@ -1,0 +1,54 @@
+# Simple workflow for deploying static content to GitHub Pages
+name: Deploy static content to Pages
+
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  # Single deploy job since we're just deploying
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Pages
+        uses: actions/configure-pages@v2
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          # Upload entire repository
+          path: '.'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
+        
+        - name: S3 Website HTTPS PR
+  # You may pin to the exact commit or the version.
+  # uses: rishabhrao/s3-website-https-pr-action@4c9b8cc112c9125d420e8098643f3d751e0bbd97
+  uses: rishabhrao/s3-website-https-pr-action@v1.0.1
+  with:
+    # Prefix of the bucket name. The PR number will be appended to this value.
+    bucket-prefix: 
+    # Folder to copy assets from into S3.
+    folder-to-copy: # optional
+    # Prefix of the GitHub Deployment Environment. The PR number will be appended to this value.
+    environment-prefix: # optional
